@@ -1,0 +1,8 @@
+package com.acme.carrental.payment.infrastructure;
+
+import com.acme.carrental.payment.domain.Payment;
+import java.util.UUID;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PaymentRepository extends JpaRepository<Payment, UUID> {
+}

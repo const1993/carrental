@@ -1,0 +1,41 @@
+# Rootless BuildKit build job.
+# Requires source code in PVC `car-rental-source` and registry auth secret `registry-auth`.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: car-rental-image-build
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: buildkit
+          image: moby/buildkit:v0.32.2-rootless
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+          env:
+            - name: DOCKER_CONFIG
+              value: /home/user/.docker
+          command: ["buildctl-daemonless.sh"]
+          args:
+            - build
+            - --frontend=dockerfile.v0
+            - --local=context=/workspace
+            - --local=dockerfile=/workspace
+            - --output=type=image,name=registry.example.com/car-rental-backend:latest,push=true
+          volumeMounts:
+            - name: source
+              mountPath: /workspace
+            - name: registry-auth
+              mountPath: /home/user/.docker
+              readOnly: true
+      volumes:
+        - name: source
+          persistentVolumeClaim:
+            claimName: car-rental-source
+        - name: registry-auth
+          secret:
+            secretName: registry-auth

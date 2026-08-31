@@ -65,7 +65,7 @@ The seeded device is bound to vehicle `00000000-0000-0000-0000-000000000501`.
 |---|---|---|
 | Register customer | `POST /api/v1/auth/register` | Public |
 | Login | `POST /api/v1/auth/login` | Public |
-| Find cars | `GET /api/v1/vehicles/search?type=SEDAN&latitude=...&longitude=...` | CUSTOMER, ADMIN |
+| Find cars | `GET /api/v1/vehicles/search?type=SEDAN&startDateTime=...&endDateTime=...` | CUSTOMER, ADMIN |
 | Get car state | `GET /api/v1/vehicles/{id}/state` | Authenticated |
 | Reserve car type and period | `POST /api/v1/reservations` + `Idempotency-Key` | CUSTOMER |
 | Cancel reservation | `POST /api/v1/reservations/{id}/cancel` | CUSTOMER |
@@ -81,7 +81,7 @@ When an admin adds a vehicle, the API derives its rental branch from the supplie
 
 Vehicle devices report `fuelLiters`; the backend validates it against tank capacity and calculates `remainingRangeKm` from the model's average liters-per-100-km consumption.
 
-Vehicle search accepts optional latitude and longitude together. When supplied, it returns vehicles within `VEHICLE_SEARCH_RADIUS_KM` (25 km by default); with neither coordinate, it searches all available vehicles.
+Vehicle search accepts optional latitude and longitude together. When supplied, it returns vehicles within `VEHICLE_SEARCH_RADIUS_KM` (25 km by default); with neither coordinate, it searches all available vehicles. It also accepts `startDateTime` and `endDateTime` together. Customers do not see vehicles with an overlapping reservation, while admins see them with `reserved: true`. If no time range is supplied, availability is evaluated at the current instant.
 
 ## Reservation / ACID behavior
 

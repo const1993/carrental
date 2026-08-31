@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: car-rental-config
+data:
+  DB_URL: jdbc:postgresql://postgres:5432/carrental
+  DB_USERNAME: carrental
+  APP_COMPANY_ID: "00000000-0000-0000-0000-000000000001"
+  RESERVATION_HOLD_DURATION: PT15M
+  RESERVATION_CLEANUP_INTERVAL: PT30S
+  JWT_ACCESS_TOKEN_TTL: PT1H
